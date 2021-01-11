@@ -112,7 +112,6 @@ void loop() {
 }
 
 void keyEvent(uint8_t swidx, uint8_t type) {
-	digitalWrite(LED_BUILTIN, HIGH);
 	switch(type) {
 		case FALLING:
 		Keyboard.press(keyBinds[swidx]);
@@ -142,17 +141,26 @@ void keyEvent(uint8_t swidx, uint8_t type) {
 		}
 		break;
 	}
-	digitalWrite(LED_BUILTIN, LOW);
 }
 
 void tick_loop() {
 	static uint8_t t1 = 0;
+	static uint8_t t2 = 10;
+	static uint8_t t3 = 0;
 
 	// on every 4 ticks
 	if(++t1 == 4) {
 		t1 = 0;
 		if(k0_p == 1 && --k0_t == 0) Keyboard.press(keyBinds[10]);
 		if(k1_p == 1 && --k1_t == 0) Keyboard.press(keyBinds[11]);
+		
+		// on every 4 * 250 ticks
+		if(++t2 == 250) {
+			PORTC &= ~(1 << 7);
+		}
+		// on every 4 * 250 ticks
+		if(++t3 == 250) {
+			PORTC |= (1 << 7);
+		}
 	}
-
 }
