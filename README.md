@@ -11,6 +11,13 @@ https://www.youtube.com/watch?v=jQfnqSeiyE0
 
 [![[Muse Dash] Gaming Everything - Hard 8 w/ MuseDashCon](https://img.youtube.com/vi/jQfnqSeiyE0/0.jpg)](https://www.youtube.com/watch?v=jQfnqSeiyE0)
 
+## Specs
+Main Board: Arcade Board Type A v1.1.0 (Arduino Leonardo based)
+Button: IST 403, IST 405, IST 406 (GSM-V0303A06 Microswitch) (https://www.istmall.co.kr/goods/goods_list.php?cateCd=014008)
+Polling Rate: 1000Hz
+Interface: USB Type B
+Dimension: 460mm x 212mm x 74mm
+
 # Repository Includes...
 **MuseDashCon** 리포지토리는 다음과 같은 자료가 저장되어 있습니다.
 
