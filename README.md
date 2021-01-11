@@ -17,7 +17,7 @@ https://www.youtube.com/watch?v=jQfnqSeiyE0
 ## Arduino 소스코드 (ArcadeBoard Type A)
 Arduino Leonardo 기반 ArcadeBoard Type A 소스코드가 있습니다.  
 PlatformIO 환경에서 개발하였으며, 아두이노 IDE에서 확인하려면 `src` 폴더를 다른 위치에 복사 후 폴더의 이름을 변경해주세요.  
-이후 폴더 내의 `main.cpp` 파일 이름을 폴더의 이름과 같게 변경해주세요.
+이후 폴더 내의 `main.cpp` 파일 이름을 `(폴더 이름).ino`로 변경해주세요.
 
 ## dxf 도면 파일
 외부 아크릴 레이저가공 및 이미지 출력에 필요한 dxf 도면 파일이 있습니다.  
