@@ -1,0 +1,8 @@
+.pio
+.vscode/*
+.pio/*
+design/affinity
+design/artwork
+design/png
+design/svg
+.travis.yml
