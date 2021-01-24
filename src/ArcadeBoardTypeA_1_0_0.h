@@ -32,7 +32,7 @@
 #define POLLING_RATE_500HZ 500
 #define POLLING_RATE_1000HZ 250
 #define POLLING_RATE_2000HZ 125
-#define CUSTOM_POLLING_RATE(x) (25000 / x)
+#define CUSTOM_POLLING_RATE(x) (250000UL / x)
 
 
 // http://ww1.microchip.com/downloads/en/devicedoc/atmel-7766-8-bit-avr-atmega16u4-32u4_datasheet.pdf
