@@ -45,6 +45,8 @@ private:
 	uint16_t sw_state_before = 0xFFFF;
 	void (*_event_callback)(uint8_t, uint8_t) = NULL;
 	void (*_tick_callback)() = NULL;
+	uint8_t inputDelays[16] = { 0 };
+	uint8_t inputDelayTick = 0;
 
 public:
 	SwitchController() {
@@ -60,6 +62,10 @@ public:
 		sei();
 	}
 
+	void setInputDelay(uint8_t tick) {
+		inputDelayTick = tick;
+	}
+
 	void update() {
 		if(_tick_callback) _tick_callback();
 
@@ -68,13 +74,22 @@ public:
 					((uint16_t)(PINB & 0xFE) << 4) |\
 					((PIND & 0xC0) >> 3) | ((PIND & 0x1C) >> 2);
 
+		uint16_t mask = 0x0001;
+		for(uint8_t i = 0; i < 16; i++, mask = mask << 1) {
+			if(inputDelays[i]) {
+				if(sw_state_before & mask) sw_state_now |= mask;
+				else sw_state_now &= ~mask;
+				inputDelays[i]--;
+			}
+		}
+
 		uint16_t changes = sw_state_now ^ sw_state_before;
 		if(changes) {
 			uint16_t mask = 0x0001;
 			for(uint8_t i = 0; i < 16; i++, mask = mask << 1) {
-				if(_event_callback && (changes & mask)) {
+				if(_event_callback && (changes & mask) && inputDelays[i] == 0) {
 					_event_callback(i, ((sw_state_now >> i) & 0x0001) | 0x0002);
-					
+					inputDelays[i] = inputDelayTick;
 				}
 			}
 		}
@@ -145,6 +160,26 @@ private:
 	}
 
 } LED;
+
+class LightSensor {
+private:
+	uint16_t adc_val = 0;
+	uint8_t pin = 0;
+
+public:
+	LightSensor(uint8_t pin) {
+		this->pin = pin;
+	}
+
+	uint16_t getBrightnessRaw() {
+		return analogRead(pin);
+	}
+	
+	uint8_t getBrightnessLevel() {
+		return 0xf - ((getBrightnessRaw() & 0x2C0) >> 6);
+	}
+
+} CdS(PIN_LIGHT_SENSOR);
 
 ISR(TIMER3_OVF_vect) {
 	Switch.update();
