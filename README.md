@@ -9,7 +9,7 @@ ArcadeBoard Type A 기반으로 만들었습니다.
 ## Video
 https://www.youtube.com/watch?v=jQfnqSeiyE0
 
-[![[Muse Dash] Gaming Everything - Hard 8 w/ MuseDashCon](https://img.youtube.com/vi/jQfnqSeiyE0/0.jpg)](https://www.youtube.com/watch?v=jQfnqSeiyE0)
+[![[Muse Dash] Gaming Everything - Hard 8 w/ MuseDashCon](https://img.youtube.com/vi/-giunZwyiVg/0.jpg)](https://www.youtube.com/watch?v=-giunZwyiVg)
 
 ## Specs
 Main Board: Arcade Board Type A v1.1.0 (Arduino Leonardo based)  
