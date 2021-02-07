@@ -33,6 +33,8 @@ uint8_t k0_t = 0;
 uint8_t k1_t = 0;
 bool k0_p = 0;
 bool k1_p = 0;
+uint8_t idle_led_val = 100;
+uint8_t b_level = 0;
 
 // Function Prototypes
 void keyEvent(uint8_t swidx, uint8_t type);
@@ -103,10 +105,14 @@ void setup() {
 	// Add callback function to Swtich Controller
 	Switch.setCallback(keyEvent);
 	Switch.setCallbackOnTick(tick_loop);
+	Switch.setInputDelay(20);
 }
 
 // Run loop() forever
 void loop() {
+	for(uint8_t i = 0; i < 16; i++) {
+		if(LED.getValue(i) != 255) LED.setValue(i, idle_led_val);
+	}
 	LED.update();
 	delay(16);
 }
@@ -157,6 +163,11 @@ void tick_loop() {
 		// on every 4 * 250 ticks
 		if(++t2 == 250) {
 			PORTC &= ~(1 << 7);
+			if(abs(b_level - CdS.getBrightnessLevel()) > 0) {
+				if(b_level > CdS.getBrightnessLevel()) b_level--;
+				else b_level++;
+			}
+			idle_led_val = b_level * 7;
 		}
 		// on every 4 * 250 ticks
 		if(++t3 == 250) {
