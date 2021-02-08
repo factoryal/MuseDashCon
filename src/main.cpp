@@ -15,7 +15,7 @@ bool debug = false;
  * │┌────┐       ┌────┐    ┌────┐    ┌────┐       ┌────┐│
  * ││ 00 │       │ 01 │    │ 02 │    │ 03 │       │ 04 ││
  * │└────┘       └────┘    └────┘    └────┘       └────┘│
- * │ L10     ┌────┐   ┌────┐    ┌────┐   ┌────┐    L11  │
+ * │ L10     ┌────┐   ┌────┐    ┌────┐   ┌────┐    D11  │
  * │         │ 05 │   │ 06 │    │ 07 │   │ 08 │         │
  * │         └────┘   └────┘    └────┘   └────┘         │
  * │                       ┌────┐                       │
@@ -23,6 +23,8 @@ bool debug = false;
  * │                       └────┘                       │
  * └────────────────────────────────────────────────────┘
  **********************************************************/
+// Long Press 00: L10
+// Double Press 04: D11
 
 uint8_t keyBinds[12] = { 'k', 'q', 'w', 'e', \
 						' ', 'j', 'a', 'd', \
@@ -31,8 +33,10 @@ uint8_t keyBinds[12] = { 'k', 'q', 'w', 'e', \
 // Variables for Long Press Feature Implementation
 uint8_t k0_t = 0;
 uint8_t k1_t = 0;
+uint8_t k1_t2 = 0;
 bool k0_p = 0;
 bool k1_p = 0;
+bool k1_lp = false;
 uint8_t idle_led_val = 100;
 uint8_t b_level = 0;
 
@@ -114,36 +118,54 @@ void loop() {
 		if(LED.getValue(i) != 255) LED.setValue(i, idle_led_val);
 	}
 	LED.update();
+	Serial.print(k1_p);
+	Serial.print(' ');
+	Serial.println(k1_t);
 	delay(16);
 }
 
 void keyEvent(uint8_t swidx, uint8_t type) {
 	switch(type) {
 		case FALLING:
-		Keyboard.press(keyBinds[swidx]);
 		LED.setValue(swidx, 0xFF);
-		if(swidx == 0) {
-			k0_t = 125;
-			k0_p = 1;
+		if(swidx == 4) {
+			if(k1_t > 0) { // BTN04 Double Tap
+				k1_t = 0;
+				k1_p = false;
+				Keyboard.press(keyBinds[11]);
+				Keyboard.release(keyBinds[11]);
+			}
+			else {
+				k1_t = 64;
+				k1_p = true;
+			}
 		}
-		else if(swidx == 4) {
-			k1_t = 125;
-			k1_p = 1;
+		else {
+			Keyboard.press(keyBinds[swidx]);
+			if(swidx == 0) {
+				k0_t = 125;
+				k0_p = 1;
+			}
 		}
 		break;
 
 		case RISING:
-		Keyboard.release(keyBinds[swidx]);
-		LED.setValue(swidx, 30);
-		if(swidx == 0) {
-			Keyboard.release(keyBinds[10]);
-			k0_t = 125;
-			k0_p = 0;
+		LED.setValue(swidx, idle_led_val);
+
+		if(swidx == 4) {
+			k1_p = false;
+			if(k1_lp) {
+				Keyboard.release(keyBinds[4]);
+				k1_lp = false;
+			}
 		}
-		else if(swidx == 4) {
-			Keyboard.release(keyBinds[11]);
-			k1_t = 125;
-			k1_p = 0;
+		else {
+			Keyboard.release(keyBinds[swidx]);
+			if(swidx == 0) {
+				Keyboard.release(keyBinds[10]);
+				k0_t = 125;
+				k0_p = 0;
+			}
 		}
 		break;
 	}
@@ -157,8 +179,25 @@ void tick_loop() {
 	// on every 4 ticks
 	if(++t1 == 4) {
 		t1 = 0;
+
 		if(k0_p == 1 && --k0_t == 0) Keyboard.press(keyBinds[10]);
-		if(k1_p == 1 && --k1_t == 0) Keyboard.press(keyBinds[11]);
+		if(k1_t > 0) {
+			if(--k1_t == 0) { // Timeout Reached
+				if(!k1_p) { // BTN04 Single Tap
+					Keyboard.press(keyBinds[4]);
+					k1_t2 = 5;
+				}
+				else if(k1_p) { // BTN04 Long Press
+					Keyboard.press(keyBinds[4]);
+					k1_lp = true;
+				}
+			}
+		}
+		if(k1_t2 > 0) {
+			if(--k1_t2 == 0) {
+				Keyboard.release(keyBinds[4]);
+			}
+		}
 		
 		// on every 4 * 250 ticks
 		if(++t2 == 250) {
