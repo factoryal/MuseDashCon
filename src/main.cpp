@@ -32,11 +32,12 @@ uint8_t keyBinds[12] = { 'k', 'q', 'w', 'e', \
 
 // Variables for Long Press Feature Implementation
 uint8_t k0_t = 0;
+bool k0_p = 0;
 uint8_t k1_t = 0;
 uint8_t k1_t2 = 0;
-bool k0_p = 0;
 bool k1_p = 0;
 bool k1_lp = false;
+
 uint8_t idle_led_val = 100;
 uint8_t b_level = 0;
 
@@ -118,9 +119,6 @@ void loop() {
 		if(LED.getValue(i) != 255) LED.setValue(i, idle_led_val);
 	}
 	LED.update();
-	Serial.print(k1_p);
-	Serial.print(' ');
-	Serial.println(k1_t);
 	delay(16);
 }
 
@@ -198,7 +196,7 @@ void tick_loop() {
 				Keyboard.release(keyBinds[4]);
 			}
 		}
-		
+
 		// on every 4 * 250 ticks
 		if(++t2 == 250) {
 			PORTC &= ~(1 << 7);
