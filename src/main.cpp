@@ -27,8 +27,12 @@ bool debug = false;
 // Double Press 04: D11
 
 uint8_t keyBinds[12] = { 'k', 'q', 'w', 'e', \
-						' ', 'j', 'a', 'd', \
-						'j', 's', KEY_ESC, KEY_TAB };
+						' ', KEY_RETURN, 'a', 'd', \
+						KEY_RETURN, 's', KEY_ESC, KEY_TAB };
+
+// uint8_t keyBinds[12] = { 'k', 'a', 'w', 'd', \
+// 						' ', 'j', 's', 'w', \
+// 						'j', 's', KEY_ESC, KEY_TAB };
 
 // Variables for Long Press Feature Implementation
 uint8_t k0_t = 0;
